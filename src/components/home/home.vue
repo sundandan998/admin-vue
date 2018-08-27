@@ -10,7 +10,7 @@
       <el-container>
         <el-aside>
             <!-- 实现页面跳转:router="true" -->
-            <!-- 菜单栏互斥  :unique-opened="true" -->  
+            <!-- 菜单栏互斥  :unique-opened="true" -->
           <el-menu
               default-active="2"
               class="el-menu-vertical-demo aside-menu"
