@@ -9,6 +9,8 @@
       </el-header>
       <el-container>
         <el-aside>
+            <!-- 实现页面跳转:router="true" -->
+            <!-- 菜单栏互斥  :unique-opened="true" -->  
           <el-menu
               default-active="2"
               class="el-menu-vertical-demo aside-menu"
@@ -17,6 +19,7 @@
               background-color="#545c64"
               text-color="#fff"
               :unique-opened="true"
+              :router="true"
               active-text-color="#ffd04b">
             <el-submenu index="1">
               <template slot="title">
@@ -24,7 +27,7 @@
                 <span>用户管理</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="1-1">用户列表</el-menu-item>
+                <el-menu-item index="/users">用户列表</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
             <el-submenu index="2">
@@ -33,7 +36,7 @@
                 <span>权限管理</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="2-1">角色列表</el-menu-item>
+                <el-menu-item index="/roles">角色列表</el-menu-item>
                 <el-menu-item index="2-2">权限列表</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
