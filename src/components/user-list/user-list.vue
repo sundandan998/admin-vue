@@ -12,7 +12,7 @@
       <el-row class="user-search">
       <!-- 搜索框部分 -->
         <el-col :span="8">
-            <el-input placeholder="请输入内容" v-model="input5" class="input-with-select">
+            <el-input placeholder="请输入内容" v-model="searchText" class="input-with-select">
                 <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
         </el-col>
@@ -26,18 +26,18 @@
         :data="tableData"
         style="width: 100%">
         <el-table-column
-          prop="date"
-          label="日期"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="name"
+          prop="username"
           label="姓名"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="address"
-          label="地址">
+          prop="  email"
+          label="邮箱"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="mobile"
+          label="电话">
         </el-table-column>
     </el-table>
     <!-- 分页部分 -->
@@ -53,26 +53,27 @@
   </div>
 </template>
 <script>
+import axios from 'axios'
 export default {
+  async created () {
+    const {token} = JSON.parse(window.localStorage.getItem('admin-token'))
+    const res = await axios.get('http://localhost:8888/api/private/v1/users', {
+      headers: {
+        // 配置请求携带身份令牌
+        Authorization: token
+      },
+      // 请求参数，对象会被转成k=v 的格式 然后自动拼接到请求路径？后  发起请求
+      params: {
+        pagenum: 1,
+        pagesize: 5
+      }
+    })
+    this.tableData = res.data.data.users
+  },
   data () {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      searchText: '',
+      tableData: []
     }
   },
   methods: {
