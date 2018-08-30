@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import {getUserInfo} from '@/assets/js/auth'
 // @ 是src路径的别名  永远指代src 是webpack配置的一个别名
 // 好处就是 不管index.js移动到哪里 路径都不需要改变
 import Login from '@/components/login/login'
@@ -56,9 +57,8 @@ router.beforeEach((to, from, next) => {
   if (to.name === 'login') {
     next()
   } else {
-    // 检查令牌状态
-    const token = window.localStorage.getItem('admin-token')
-    if (!token) {
+    // 检查有无令牌
+    if (!getUserInfo()) {
       next({
         name: 'login'
       })

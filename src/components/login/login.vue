@@ -20,6 +20,7 @@
 
 <script>
 import axios from 'axios'
+import {saveUserInfo} from '@/assets/js/auth'
 export default{
   data () {
     return {
@@ -40,7 +41,8 @@ export default{
       // 根据响应做交互
       if (data.meta.status === 200) {
         // 把token放到本地存储localStorage中，其他组件需要都去localStorage中拿
-        window.localStorage.setItem('admin-token', JSON.stringify(data.data))
+        // 把服务器给我当前登录用户信息存储到本地存储 session-users
+        saveUserInfo(data.data)
         this.$router.push({
           name: 'home'
         })

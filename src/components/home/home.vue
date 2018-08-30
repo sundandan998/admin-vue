@@ -78,6 +78,7 @@
     </el-container>
 </template>
 <script>
+import {removeUserInfo} from '@/assets/js/auth'
 export default {
   data () {
     return {}
@@ -90,7 +91,8 @@ export default {
         type: 'warning'
       }).then(() => {
         //  删除token
-        window.localStorage.removeItem('admin-token')
+        removeUserInfo()
+        // window.localStorage.removeItem('admin-token')
         // 跳转到登录视图
         this.$router.push({
           name: 'login'
