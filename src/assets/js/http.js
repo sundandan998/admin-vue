@@ -1,18 +1,25 @@
 import axios from 'axios'
-
+import {getToken} from './auth'
 // export default axios.create({
-//   baseURL: 'http://localhost:8888/api/private/v1/'
+//   baseURL: `http://localhost:8888/api/private/v1/`
 // })
-// 1.定义一个插件对象
 const httpPlugin = {}
-// 2.为插件添加一个成员 install install是一个函数 有两个参数Vue, options
+const http = axios.create({
+  baseURL: `http://localhost:8888/api/private/v1/`
+})
+http.interceptors.request.use(function (config) {
+  if (config.url !== 'login') {
+    config.headers['Authorization'] = getToken()
+  }
+  return config
+}, function (error) {
+  return Promise.reject(error)
+})
 httpPlugin.install = function (Vue, options) {
-  // 3. 添加实例方法
-  Vue.prototype.$http = axios.create({
-    baseURL: 'http://localhost:8888/api/private/v1/'
-  })
+  // 4. 添加实例方法
+  Vue.prototype.$http = http
 }
-// 4.导出插件对象
+// 导出插件对象
 export default httpPlugin
-// 5.在main.js中加载使插件生效
+// 在入口文件 man.js中 加载使插件生效
 // Vue.use(httpPlugin)

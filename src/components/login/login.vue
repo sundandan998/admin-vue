@@ -19,7 +19,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
+// import http from '@/assets/js/http'
 import {saveUserInfo} from '@/assets/js/auth'
 export default{
   data () {
@@ -36,12 +37,13 @@ export default{
       // console.log(this.userForm)
       // 表单校验
       // 发请求执行登录操作
-      const res = await axios.post('http://localhost:8888/api/private/v1/login', this.userForm)
+      const res = await this.$http.post('/login', this.userForm)
       const data = res.data
       // 根据响应做交互
       if (data.meta.status === 200) {
         // 把token放到本地存储localStorage中，其他组件需要都去localStorage中拿
         // 把服务器给我当前登录用户信息存储到本地存储 session-users
+        // window.localStorage.setItem('session-users', JSON.stringify(data.data))
         saveUserInfo(data.data)
         this.$router.push({
           name: 'home'

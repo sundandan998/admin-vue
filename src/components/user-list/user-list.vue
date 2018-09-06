@@ -22,68 +22,95 @@
       </el-col>
     </el-row>
       <!-- 表格部分 -->
-      <el-table
-        :data="tableData"
-        style="width: 100%">
-        <el-table-column
-          prop="username"
-          label="姓名"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="  email"
-          label="邮箱"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="mobile"
-          label="电话">
-        </el-table-column>
-    </el-table>
-    <!-- 分页部分 -->
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="4"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
-    </el-pagination>
+    <el-table
+    :data="tableData"
+    style="width: 100%">
+    <el-table-column
+      prop="username"
+      label="姓名"
+      width="180">
+    </el-table-column>
+    <el-table-column
+      prop="email"
+      label="邮箱"
+      width="180">
+    </el-table-column>
+    <el-table-column
+      prop="mobile"
+      label="电话"
+      width="180">
+    </el-table-column>
+    <el-table-column
+      label="用户状态"
+      width="180">
+      <template slot-scope="scope">
+        <el-switch
+          v-model="scope.row.mg_state"
+          active-color="#13ce66"
+          inactive-color="#ff4949">
+        </el-switch>
+      </template>
+  </el-table-column>
+  <el-table-column
+    label="操作"
+    width="180">
+    <template slot-scope="scope">
+        <el-button type="primary" icon="el-icon-edit" size="small" plain></el-button>
+        <el-button type="info" icon="el-icon-share" size="small" plain></el-button>
+        <el-button type="danger" icon="el-icon-delete" size="small" plain></el-button>
+    </template>
+</el-table-column>
+  </el-table>
+  <!-- 分页部分 -->
+  <el-pagination
+  @size-change="handleSizeChange"
+  @current-change="handleCurrentChange"
+  :current-page="currentPage"
+  :page-sizes="[1,2,3,4]"
+  layout="total,sizes,prev, pager, next, jumper"
+  :total="totalSize">
+</el-pagination>
   </div>
-</template>
+  </template>
 <script>
 // import axios from 'axios'
 // import http from '@/assets/js/http'
-import {getToken} from '@/assets/js/auth'
+// import {getToken} from '@/assets/js/auth'
 export default {
   async created () {
-    const token = getToken()
-    const res = await this.$http.get('/users', {
-      headers: {
-        // 配置请求携带身份令牌
-        Authorization: token
-      },
-      // 请求参数，对象会被转成k=v 的格式 然后自动拼接到请求路径？后  发起请求
-      params: {
-        pagenum: 1,
-        pagesize: 5
-      }
-    })
-    this.tableData = res.data.data.users
+    // 用户数据，上来加载第一页数据
+    this.loadUsersPage(1)
   },
   data () {
     return {
       searchText: '',
-      tableData: []
+      tableData: [],
+      totalSize: 0,
+      currentPage: 1,
+      pageSize: 1
     }
   },
   methods: {
-    handleSizeChange (val) {
-      console.log(`每页 ${val} 条`)
+    // 单击切换每页大小，数据变化
+    handleSizeChange (pageSize) {
+      this.pageSize = pageSize
+      this.loadUsersPage(1, pageSize)
+      this.currentPage = 1
     },
-    handleCurrentChange (val) {
-      console.log(`当前页: ${val}`)
+    handleCurrentChange (currentPage) {
+      this.loadUsersPage(currentPage, this.pageSize)
+    },
+    // 根据页码加载用户数据
+    async loadUsersPage (page, pageSize = 1) {
+      const res = await this.$http.get('/users', {
+        params: {
+          pagenum: page,
+          pagesize: pageSize
+        }
+      })
+      const {users, total} = res.data.data
+      this.tableData = users
+      this.totalSize = total
     }
   }
 }
