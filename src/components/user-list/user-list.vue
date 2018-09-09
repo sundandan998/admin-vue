@@ -21,7 +21,10 @@
         </el-col>
             <!-- 添加按钮部分 -->
         <el-col :span="4">
-            <el-button type="success" plain>成功按钮</el-button>
+            <el-button
+            type="success"
+            plain
+            @click="dialogFormVisible = true">添加按钮</el-button>
       </el-col>
     </el-row>
       <!-- 表格部分 -->
@@ -74,6 +77,27 @@
   layout="total,sizes,prev, pager, next, jumper"
   :total="totalSize">
 </el-pagination>
+<!-- 添加对话的弹出框 -->
+<el-dialog title="添加用户" :visible.sync="dialogFormVisible">
+  <el-form :model="userForm">
+    <el-form-item label="用户名" label-width="120px">
+      <el-input v-model="userForm.username" auto-complete="off"></el-input>
+    </el-form-item>
+    <el-form-item label="密码" label-width="120px">
+      <el-input v-model="userForm.password" auto-complete="off"></el-input>
+    </el-form-item>
+    <el-form-item label="邮箱" label-width="120px">
+      <el-input v-model="userForm.email" auto-complete="off"></el-input>
+    </el-form-item>
+    <el-form-item label="电话" label-width="120px">
+      <el-input v-model="userForm.mobile" auto-complete="off"></el-input>
+    </el-form-item>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="dialogFormVisible = false">取 消</el-button>
+    <el-button type="primary" @click="handleAddUser">确 定</el-button>
+  </div>
+</el-dialog>
   </div>
   </template>
 <script>
@@ -91,7 +115,14 @@ export default {
       tableData: [],
       totalSize: 0,
       currentPage: 1,
-      pageSize: 1
+      pageSize: 1,
+      userForm: {
+        username: '',
+        password: '',
+        email: '',
+        mobile: ''
+      },
+      dialogFormVisible: false
     }
   },
   methods: {
@@ -119,6 +150,21 @@ export default {
           type: 'success',
           message: `用户状态${state ? '启用' : '禁用'}成功`
         })
+      }
+    },
+    // 添加用户按钮
+    async handleAddUser () {
+      // 根据响应做交互
+      const res = await this.$http.post('/users', this.userForm)
+      if (res.data.meta.status === 201) {
+        this.$message({
+          type: 'success',
+          message: '添加用户成功'
+        })
+        // 关闭对话框1
+        this.dialogFormVisible = false
+        this.dialogFormVisible.text = ''
+        this.loadUsersPage(this.currentPage)
       }
     },
     // 根据页码加载用户数据
