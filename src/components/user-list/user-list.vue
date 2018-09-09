@@ -48,6 +48,7 @@
       width="180">
       <template slot-scope="scope">
         <el-switch
+        @change ="(val) => {handleStateChange(val, scope.row)}"
           v-model="scope.row.mg_state"
           active-color="#13ce66"
           inactive-color="#ff4949">
@@ -103,8 +104,22 @@ export default {
     handleCurrentChange (currentPage) {
       this.loadUsersPage(currentPage, this.pageSize)
     },
+    // 用户搜索功能
     handleSearch () {
       this.loadUsersPage(1)
+      this.searchText = ''
+    },
+    // switch开关状态功能
+    async handleStateChange (state, user) {
+      // console.log(val, user)
+      const {id: userId} = user
+      const res = await this.$http.put(`/users/${userId}/state/${state}`)
+      if (res.data.meta.status === 200) {
+        this.$message({
+          type: 'success',
+          message: `用户状态${state ? '启用' : '禁用'}成功`
+        })
+      }
     },
     // 根据页码加载用户数据
     async loadUsersPage (page, pageSize = 1) {
