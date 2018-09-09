@@ -13,7 +13,10 @@
       <!-- 搜索框部分 -->
         <el-col :span="8">
             <el-input placeholder="请输入内容" v-model="searchText" class="input-with-select">
-                <el-button slot="append" icon="el-icon-search"></el-button>
+                <el-button slot="append"
+                icon="el-icon-search"
+                @click = "handleSearch">
+                </el-button>
             </el-input>
         </el-col>
             <!-- 添加按钮部分 -->
@@ -100,12 +103,16 @@ export default {
     handleCurrentChange (currentPage) {
       this.loadUsersPage(currentPage, this.pageSize)
     },
+    handleSearch () {
+      this.loadUsersPage(1)
+    },
     // 根据页码加载用户数据
     async loadUsersPage (page, pageSize = 1) {
       const res = await this.$http.get('/users', {
         params: {
           pagenum: page,
-          pagesize: pageSize
+          pagesize: this.pageSize,
+          query: this.searchText
         }
       })
       const {users, total} = res.data.data
