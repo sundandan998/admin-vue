@@ -51,7 +51,7 @@
       <template 
       slot-scope="scope">
         <el-switch
-        @change ="(val) => {handleStateChange(val, scope.row)}"
+        @change ="handleStateChange(scope.row)"
           v-model="scope.row.mg_state"
           active-color="#13ce66"
           inactive-color="#ff4949">
@@ -89,7 +89,7 @@
   <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="currentPage"
+      :current-page.sync="currentPage"
       :page-sizes="[1,2,3,4]"
       layout="total,sizes,prev, pager, next, jumper"
       :total="totalSize">

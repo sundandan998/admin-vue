@@ -38,7 +38,7 @@ export default{
       // 表单校验
       // 发请求执行登录操作
       const res = await this.$http.post('/login', this.userForm)
-      console.log(res)
+      // console.log(res)
       const data = res.data
       // 根据响应做交互
       if (data.meta.status === 200) {

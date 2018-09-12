@@ -64,9 +64,9 @@ export default {
       this.searchText = ''
     },
     // switch开关状态功能
-    async handleStateChange (state, user) {
-      // console.log(val, user)
-      const {id: userId} = user
+    async handleStateChange (user) {
+      // console.log(user)
+      const {id: userId, mg_state: state} = user
       const res = await this.$http.put(`/users/${userId}/state/${state}`)
       if (res.data.meta.status === 200) {
         this.$message({
