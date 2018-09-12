@@ -193,7 +193,12 @@ export default {
           })
           // 关闭对话框1
           this.dialogFormVisible = false
+          // 重新加载用户数据
           this.loadUsersPage(this.currentPage)
+          // 清空表单内容
+          for (let key in this.userForm) {
+            this.userForm[key] = ''
+          }
         }
       })
     },
