@@ -63,8 +63,19 @@
     width="180">
     <template slot-scope="scope">
         <el-button type="primary" icon="el-icon-edit" size="small" plain></el-button>
-        <el-button type="info" icon="el-icon-share" size="small" plain></el-button>
-        <el-button type="danger" icon="el-icon-delete" size="small" plain></el-button>
+        <el-button
+        type="info"
+        icon="el-icon-share"
+        size="small"
+        plain
+    >
+      </el-button>
+        <el-button
+        type="danger"
+        icon="el-icon-delete"
+        size="small" plain
+        @click="handleDeleteUser(scope.row)">
+        </el-button>
     </template>
 </el-table-column>
   </el-table>
@@ -121,7 +132,7 @@ export default {
       searchText: '',
       tableData: [],
       totalSize: 0,
-      currentPage: 1,
+      currentPage: 4,
       pageSize: 1,
       userForm: {
         username: '',
@@ -156,7 +167,7 @@ export default {
     handleSizeChange (pageSize) {
       this.pageSize = pageSize
       this.loadUsersPage(1, pageSize)
-      this.currentPage = 1
+      this.currentPage = 4
     },
     handleCurrentChange (currentPage) {
       this.loadUsersPage(currentPage, this.pageSize)
@@ -214,6 +225,30 @@ export default {
       const {users, total} = res.data.data
       this.tableData = users
       this.totalSize = total
+    },
+    // 删除用户操作
+    async handleDeleteUser (user) {
+      this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => { // 点击确认执行的操作
+        const {id: userId} = user
+        const res = await this.$http.delete(`/users/${userId}`)
+        if (res.data.meta.status === 200) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          // 删除成功重新加载数据
+          this.loadUsersPage(this.currentPage)
+        }
+      }).catch(() => { // 点击取消执行的操作
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   }
 }
