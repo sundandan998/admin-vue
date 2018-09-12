@@ -15,18 +15,26 @@
         type="index">
       </el-table-column>
       <el-table-column
-        prop="date"
-        label="日期"
+        prop="authName"
+        label="权限名称"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="name"
-        label="姓名"
+        prop="path"
+        label="路径"
         width="180">
       </el-table-column>
       <el-table-column
-        prop="address"
-        label="地址">
+        label="层级">
+        <!-- 自定义表格列 -->
+        <!-- 1.在表格列中加一个template标签 写上slot-scop ='scop' -->
+        <!-- slot-scop ='scop'的值scop可以是任意名字，他始终表示当前遍历的作用域对象 -->
+        <!-- 该作用域中有一个属性row 可以用来获取当前行对象，就是数组的每一项 -->
+          <template slot-scope="scope">
+            <span v-if = "scope.row.level === '0'">一级</span>
+            <span v-else-if = " scope.row.level === '1'">二级</span>
+            <span v-else-if = " scope.row.level === '2'">三级</span>
+          </template>
       </el-table-column>
     </el-table>
   </div>
@@ -34,41 +42,22 @@
 
 <script>
 export default {
+  created () {
+    this.loadRigths()
+  },
   data () {
     return {
-      tableData: [{
-        date: '2016-05-03',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333,
-        tag: '家'
-      }, {
-        date: '2016-05-02',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333,
-        tag: '公司'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333,
-        tag: '家'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333,
-        tag: '公司'
-      }]
+      tableData: []
+    }
+  },
+  methods: {
+    async loadRigths () {
+      const res = await this.$http.get('/rights/list')
+      // console.log(res)
+      const {data, meta} = res.data
+      if (meta.status === 200) {
+        this.tableData = data
+      }
     }
   }
 }
