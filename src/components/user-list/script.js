@@ -10,13 +10,23 @@ export default {
       totalSize: 0,
       currentPage: 4,
       pageSize: 1,
+      // 添加用户表单
       userForm: {
         username: '',
         password: '',
         email: '',
         mobile: ''
       },
+      // 编辑用户表单
+      editUserForm: {
+        username: '',
+        email: '',
+        mobile: ''
+      },
+      // 添加用户对话框
       dialogFormVisible: false,
+      // 编辑用户对话框
+      dialogEditFormVisible: false,
       // 表单验证
       addUserFormRules: {
         username: [
@@ -125,6 +135,17 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    // 编辑用户操作
+    async handleEditUser () {
+      console.log('mdm')
+    },
+    // 处理显示被编辑的用户表单信息
+    async handleShowEditForm (user) {
+      this.dialogEditFormVisible = true
+      const res = await this.$http.get(`/users/${user.id}`)
+      console.log(res)
+      this.editUserForm = res.data.data
     }
   }
 }
