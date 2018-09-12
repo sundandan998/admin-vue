@@ -138,7 +138,18 @@ export default {
     },
     // 编辑用户操作
     async handleEditUser () {
-      console.log('mdm')
+      const {id: userId} = this.editUserForm
+      const res = await this.$http.put(`/users/${userId}`, this.editUserForm)
+      if (res.data.meta.status === 200) {
+        this.$message({
+          type: 'success',
+          message: '编辑用户成功'
+        })
+        // 关闭对话框
+        this.dialogEditFormVisible = false
+        // 重新加载数据
+        this.loadUsersPage(this.currentPage)
+      }
     },
     // 处理显示被编辑的用户表单信息
     async handleShowEditForm (user) {
