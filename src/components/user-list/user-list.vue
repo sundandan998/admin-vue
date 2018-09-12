@@ -78,18 +78,25 @@
   :total="totalSize">
 </el-pagination>
 <!-- 添加对话的弹出框 -->
+<!-- 表单验证 -->
+<!-- 1.为el-form 增加:rules -->
+<!-- 2.为el-form-item 元素 配置prop属性 值是验证对象中对应的名称 -->
+<!-- vue的$refs属性可以用来设置ref属性的DOM -->
 <el-dialog title="添加用户" :visible.sync="dialogFormVisible">
-  <el-form :model="userForm">
-    <el-form-item label="用户名" label-width="120px">
+  <el-form
+  :model = "userForm"
+  :rules = "addUserFormRules"
+  ref = "addUserForm">
+    <el-form-item label="用户名" label-width="120px" prop="username">
       <el-input v-model="userForm.username" auto-complete="off"></el-input>
     </el-form-item>
-    <el-form-item label="密码" label-width="120px">
+    <el-form-item label="密码" label-width="120px" prop="password">
       <el-input v-model="userForm.password" auto-complete="off"></el-input>
     </el-form-item>
-    <el-form-item label="邮箱" label-width="120px">
+    <el-form-item label="邮箱" label-width="120px" prop="email">
       <el-input v-model="userForm.email" auto-complete="off"></el-input>
     </el-form-item>
-    <el-form-item label="电话" label-width="120px">
+    <el-form-item label="电话" label-width="120px" prop="mobile">
       <el-input v-model="userForm.mobile" auto-complete="off"></el-input>
     </el-form-item>
   </el-form>
@@ -122,7 +129,26 @@ export default {
         email: '',
         mobile: ''
       },
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      // 表单验证
+      addUserFormRules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输密码', trigger: 'blur' },
+          { min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: '请输邮箱', trigger: 'blur' },
+          { min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'blur' }
+        ],
+        mobile: [
+          { required: true, message: '请输电话', trigger: 'blur' },
+          { min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
@@ -154,18 +180,22 @@ export default {
     },
     // 添加用户按钮
     async handleAddUser () {
-      // 根据响应做交互
-      const res = await this.$http.post('/users', this.userForm)
-      if (res.data.meta.status === 201) {
-        this.$message({
-          type: 'success',
-          message: '添加用户成功'
-        })
-        // 关闭对话框1
-        this.dialogFormVisible = false
-        this.dialogFormVisible.text = ''
-        this.loadUsersPage(this.currentPage)
-      }
+      this.$refs['addUserForm'].validate(async (valid) => {
+        if (!valid) {
+          return false
+        }
+        // 根据响应做交互
+        const res = await this.$http.post('/users', this.userForm)
+        if (res.data.meta.status === 201) {
+          this.$message({
+            type: 'success',
+            message: '添加用户成功'
+          })
+          // 关闭对话框1
+          this.dialogFormVisible = false
+          this.loadUsersPage(this.currentPage)
+        }
+      })
     },
     // 根据页码加载用户数据
     async loadUsersPage (page, pageSize = 1) {
